@@ -53,8 +53,11 @@ self.addEventListener('activate', event => {
 // If no response is found, it populates the runtime cache with the response
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
+  let allowed_ext = ["css" , "js" , "png" , "jpg"];
+  let extension =   event.request.url.toString().split(/[#?]/)[0].split('.').pop().trim();
+  
   // Skip cross-origin requests, like those for Google Analytics.
-  if (event.request.url.startsWith(self.location.origin)) {
+  if (event.request.url.startsWith(self.location.origin) && allowed_ext.includes(extension)) {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         if (cachedResponse) {
